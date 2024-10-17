@@ -10,10 +10,10 @@ Albid Nawar<br/>
 **ID:** 2212659642<br/>
 albid.nawar@northsouth.edu<br/><br/>
 Golam Muin-U-Ddin Chishti<br/>
-**ID:** 213253042<br/><br/>
+**ID:** 213253042<br/>
 golam.chishti@northsouth.edu<br/><br/>
 Sarith Chowdhury<br/>
-**ID:** 2212551642
+**ID:** 2212551642 <br/>
 sarith.chowdhury@northsouth.edu
 
 
