@@ -1,4 +1,6 @@
 # CSEC27-Summer-24
+# Section: 04
+
 Collaborative project on software design patterns.
 
 **Team Members:**<br/>
