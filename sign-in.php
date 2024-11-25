@@ -28,7 +28,7 @@ class User {
 <?php
 class Admin extends User {
     public function getLandingPage() {
-        return 'admin-panel.php';
+        return 'admin.php';
     }
 }
 ?>

@@ -1,5 +1,4 @@
 <?php
-include 'components/connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Get form data and trim whitespace
