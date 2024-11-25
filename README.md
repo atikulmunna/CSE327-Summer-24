@@ -1,4 +1,4 @@
-# CSEC27-Summer-24
+# CSE327-Summer-24
 # Section: 04
 
 PlantVerse is an innovative web-based e-commerce platform created for plant enthusiasts and the general population alike. The platform brings together a curated marketplace for plants and plant-related products. PlantVerse stands out from traditional e-commerce platforms by offering a comprehensive, well-curated product catalog that takes into account the climate and average weather conditions of this region. The platform features a vast range of products, including live plants, pots, planters, seeds, fertilizers, and other accessories necessary for plant care and maintenance. These products are carefully categorized, allowing users to easily browse, filter, and search based on their specific preferences, such as plant type, care level, or price range. By offering such a range, PlantVerse aims to reach to a variety of plant enthusiasts, from those with small indoor collections to avid gardeners.
