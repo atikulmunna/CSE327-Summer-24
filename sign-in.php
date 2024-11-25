@@ -1,4 +1,5 @@
 <?php
+//factory design pattern
 class UserFactory {
     public static function createUser($id, $name, $role) {
         if ($role == 'admin') {
