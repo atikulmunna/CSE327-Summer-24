@@ -34,9 +34,7 @@ class Admin extends User {
 ?>
 <?php
 session_start();
-require_once 'UserFactory.php';
-require_once 'User.php';
-require_once 'Admin.php';
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
