@@ -89,7 +89,7 @@ if (isset($message)) {
               <?php if ($username != 'guest'): ?>
                 <a class="justify-between" href="profile.php">Profile</a>
               <?php else: ?>
-                <a class="justify-between" href="sign-in.html">User</a>
+                <a class="justify-between" href="sign-in.html">login</a>
               <?php endif; ?>
             </li>
             <li><a href="admin.php">Admin</a></li>
