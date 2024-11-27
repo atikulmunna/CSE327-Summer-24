@@ -40,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <!DOCTYPE html>
 <html lang="en" data-theme="cupcake">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,134 +48,152 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Admin</title>
     <script>
-    tailwind.config = {
-        theme: {
-            extend: {
-                colors: {
-                    clifford: '#da373d',
-                    'plant-primary': '#E76F51',
-                    'plant-primary-bg': 'rgba(231, 111, 81, 0.10)',
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        clifford: '#da373d',
+                        'plant-primary': '#E76F51',
+                        'plant-primary-bg': 'rgba(231, 111, 81, 0.10)',
+                    }
                 }
             }
         }
-    }
     </script>
 </head>
+
 <body style="padding-top: 2px;">
 
-<?php include 'components/admin_header.php'; ?>
-<div class="container pl-12 pt-5">
-    <div class="flex gap-20">
-    <!-- Add Product -->
-    <form method="POST" class=" card bg-base-100 shadow-xl h-full p-10">
-        <p class="text-4xl pb-10">Add Product</p>
-        <div class="flex gap-5">
-        <div class="mb-3 ">
-            <label for="product_id" class="form-label">Product ID</label>
-            <input type="text" class="form-control input input-bordered w-full max-w-xs mt-2" id="product_id" name="product_id" required>
-        </div>
-        <div class="mb-3">
-            <label for="name" class="form-label">Product Name</label>
-            <input type="text" class="form-control input input-bordered w-full max-w-xs mt-2" id="name" name="name" required>
-        </div>
-        </div>
-        <div class="flex gap-9">
-        <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea class="form-control input input-bordered w-full max-w-xs mt-2" id="description" name="description" required></textarea>
-        </div>
-        <div class="mb-3">
-            <label for="price" class="form-label">Price</label>
-            <input type="number" step="0.01" class="form-control input input-bordered w-full max-w-xs mt-2" id="price" name="price" required>
-        </div>
-        </div>
-        <div class="flex gap-5">
-        <div class="mb-3">
-            <label for="image_url" class="form-label">Image URL</label>
-            <input type="url" class="form-control input input-bordered w-full max-w-xs mt-2" id="image_url" name="image_url" required>
-        </div>
-        <div class="mb-3">
-            <label for="product_type" class="form-label">Category</label>
-            <input type="text" class="form-control input input-bordered w-full max-w-xs mt-2" id="product_type" name="product_type" required>
-        </div>
-        </div>
-        <button type="submit" class="btn btn-primary ">Add Product</button>
-    </form>
-    <!-- Update products -->
-    <form method="POST" class=" card bg-base-100 shadow-xl h-full p-10">
-        <p class="text-4xl pb-10">Update Product</p>
-        <div class="flex gap-5">
-        <div class="mb-3 ">
-            <label for="update_id" class="form-label">Product ID to Update</label>
-            <input type="text" class="form-control input input-bordered w-full max-w-xs mt-2" id="update_id" name="update_id" required>
-        </div>
-        <div class="mb-3">
-            <label for="update_name" class="form-label">New Product Name</label>
-            <input type="text" class="form-control input input-bordered w-full max-w-xs mt-2" id="update_name" name="update_name" required>
-        </div>
-        </div>
-        <div class="flex gap-9">
-        <div class="mb-3">
-            <label for="update_description" class="form-label">New Description</label>
-            <textarea class="form-control input input-bordered w-full max-w-xs mt-2" id="update_description" name="update_description" required></textarea>
-        </div>
-        <div class="mb-3">
-            <label for="update_price" class="form-label">New Price</label>
-            <input type="number" step="0.01" class="form-control input input-bordered w-full max-w-xs mt-2" id="update_price" name="update_price" required>
-        </div>
-        </div>
-        <div class="flex gap-5">
-        <div class="mb-3">
-            <label for="update_image_url" class="form-label">New Image URL</label>
-            <input type="url" class="form-control input input-bordered w-full max-w-xs mt-2" id="update_image_url" name="update_image_url" required>
-        </div>
-        <div class="mb-3">
-            <label for="update_product_type" class="form-label">New Category</label>
-            <input type="text" class="form-control input input-bordered w-full max-w-xs mt-2" id="update_product_type" name="update_product_type" required>
-        </div>
-    </div>
-
-        <button type="submit" class="btn btn-warning">Update Product</button>
-        
-    </form> 
-    <!-- Delete products -->
-    <form method="POST" class=" card bg-base-100 shadow-xl h-full p-10 mr-10">
-        <div class="mb-3">
-            <label for="delete_id" class="form-label">Product ID to Delete</label>
-            <input type="text" class="form-control input input-bordered w-full max-w-xs mt-2" id="delete_id" name="delete_id" required>
-        </div>
-        <button type="submit" class="btn btn-error mb-5">Delete Product</button>
-    </form>
-    </div>
-</div>
-
-<!-- cards that are added -->
-<div class="cards-container grid grid-cols-3  mt-10 ml-[100px] ">
-    <?php
-    $select_products = $conn->prepare("SELECT * FROM `products`");
-    $select_products->execute();
-    $result = $select_products->get_result();
-    ?>
-    <?php if($result->num_rows > 0): ?>
-        <?php while ($row = $result->fetch_assoc()): ?>
-            <div class="card w-96 bg-base-100 shadow-xl mt-10">
-                <figure>
-                    <img src="<?= $row['image_url'] ?>" class="card-img-top" alt="<?= $row['name'] ?>">
-                </figure>
-                <div class="card-body">
-                    <h2 class="card-title"><?= $row['name'] ?></h2>
-                    <p><?= $row['description'] ?></p>
-                    <div class="card-actions flex items-center justify-between">
-                        <p class="text-2xl"><strong>$<?= $row['price'] ?></strong></p>
-                        <p class="text-2xl"><strong><?= $row['product_id'] ?></strong></p>
-                        <a href="admin.php?delete=<?= $row['product_id']; ?>" class="btn btn-error">delete</a>
+    <?php include 'components/admin_header.php'; ?>
+    <div class="container pl-12 pt-5">
+        <div class="flex gap-20">
+            <!-- Add Product -->
+            <form method="POST" class=" card bg-base-100 shadow-xl h-full p-10">
+                <p class="text-4xl pb-10">Add Product</p>
+                <div class="flex gap-5">
+                    <div class="mb-3 ">
+                        <label for="product_id" class="form-label">Product ID</label>
+                        <input type="text" class="form-control input input-bordered w-full max-w-xs mt-2"
+                            id="product_id" name="product_id" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Product Name</label>
+                        <input type="text" class="form-control input input-bordered w-full max-w-xs mt-2" id="name"
+                            name="name" required>
                     </div>
                 </div>
-            </div>
-        <?php endwhile; ?>
-    <?php endif; ?>
-</div>
+                <div class="flex gap-9">
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control input input-bordered w-full max-w-xs mt-2" id="description"
+                            name="description" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="price" class="form-label">Price</label>
+                        <input type="number" step="0.01" class="form-control input input-bordered w-full max-w-xs mt-2"
+                            id="price" name="price" required>
+                    </div>
+                </div>
+                <div class="flex gap-5">
+                    <div class="mb-3">
+                        <label for="image_url" class="form-label">Image URL</label>
+                        <input type="url" class="form-control input input-bordered w-full max-w-xs mt-2" id="image_url"
+                            name="image_url" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="product_type" class="form-label">Category</label>
+                        <input type="text" class="form-control input input-bordered w-full max-w-xs mt-2"
+                            id="product_type" name="product_type" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary ">Add Product</button>
+            </form>
+            <!-- Update products -->
+            <form method="POST" class=" card bg-base-100 shadow-xl h-full p-10">
+                <p class="text-4xl pb-10">Update Product</p>
+                <div class="flex gap-5">
+                    <div class="mb-3 ">
+                        <label for="update_id" class="form-label">Product ID to Update</label>
+                        <input type="text" class="form-control input input-bordered w-full max-w-xs mt-2" id="update_id"
+                            name="update_id" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_name" class="form-label">New Product Name</label>
+                        <input type="text" class="form-control input input-bordered w-full max-w-xs mt-2"
+                            id="update_name" name="update_name" required>
+                    </div>
+                </div>
+                <div class="flex gap-9">
+                    <div class="mb-3">
+                        <label for="update_description" class="form-label">New Description</label>
+                        <textarea class="form-control input input-bordered w-full max-w-xs mt-2" id="update_description"
+                            name="update_description" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_price" class="form-label">New Price</label>
+                        <input type="number" step="0.01" class="form-control input input-bordered w-full max-w-xs mt-2"
+                            id="update_price" name="update_price" required>
+                    </div>
+                </div>
+                <div class="flex gap-5">
+                    <div class="mb-3">
+                        <label for="update_image_url" class="form-label">New Image URL</label>
+                        <input type="url" class="form-control input input-bordered w-full max-w-xs mt-2"
+                            id="update_image_url" name="update_image_url" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_product_type" class="form-label">New Category</label>
+                        <input type="text" class="form-control input input-bordered w-full max-w-xs mt-2"
+                            id="update_product_type" name="update_product_type" required>
+                    </div>
+                </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                <button type="submit" class="btn btn-warning">Update Product</button>
+
+            </form>
+            <!-- Delete products -->
+            <form method="POST" class=" card bg-base-100 shadow-xl h-full p-10 mr-10">
+                <div class="mb-3">
+                    <label for="delete_id" class="form-label">Product ID to Delete</label>
+                    <input type="text" class="form-control input input-bordered w-full max-w-xs mt-2" id="delete_id"
+                        name="delete_id" required>
+                </div>
+                <button type="submit" class="btn btn-error mb-5">Delete Product</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- cards that are added -->
+    <div class="cards-container grid grid-cols-3  mt-10 ml-[100px] ">
+        <?php
+        $select_products = $conn->prepare("SELECT * FROM `products`");
+        $select_products->execute();
+        $result = $select_products->get_result();
+        ?>
+        <?php if ($result->num_rows > 0): ?>
+            <?php while ($row = $result->fetch_assoc()): ?>
+                <div class="card w-96 bg-base-100 shadow-xl mt-10">
+                    <figure>
+                        <img src="<?= $row['image_url'] ?>" class="card-img-top" alt="<?= $row['name'] ?>">
+                    </figure>
+                    <div class="card-body">
+                        <h2 class="card-title"><?= $row['name'] ?></h2>
+                        <p><?= $row['description'] ?></p>
+                        <div class="card-actions flex items-center justify-between">
+                            <p class="text-2xl"><strong>$<?= $row['price'] ?></strong></p>
+                            <p class="text-2xl"><strong><?= $row['product_id'] ?></strong></p>
+                            <form method="POST" action="admin.php">
+                                <input type="hidden" name="delete_id" value="<?= $row['product_id']; ?>">
+                                <button type="submit" class="btn btn-error">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <?php endwhile; ?>
+        <?php endif; ?>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
