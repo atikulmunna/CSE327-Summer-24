@@ -37,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en" data-theme="cupcake">
 <head>
@@ -148,7 +149,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </div>
 
 <!-- cards that are added -->
-
+<div class="cards-container grid grid-cols-3  mt-10 ml-[100px] ">
+    <?php
+    $select_products = $conn->prepare("SELECT * FROM `products`");
+    $select_products->execute();
+    $result = $select_products->get_result();
+    ?>
+    <?php if($result->num_rows > 0): ?>
+        <?php while ($row = $result->fetch_assoc()): ?>
+            <div class="card w-96 bg-base-100 shadow-xl mt-10">
+                <figure>
+                    <img src="<?= $row['image_url'] ?>" class="card-img-top" alt="<?= $row['name'] ?>">
+                </figure>
+                <div class="card-body">
+                    <h2 class="card-title"><?= $row['name'] ?></h2>
+                    <p><?= $row['description'] ?></p>
+                    <div class="card-actions flex items-center justify-between">
+                        <p class="text-2xl"><strong>$<?= $row['price'] ?></strong></p>
+                        <p class="text-2xl"><strong><?= $row['product_id'] ?></strong></p>
+                        <a href="admin.php?delete=<?= $row['product_id']; ?>" class="btn btn-error">delete</a>
+                    </div>
+                </div>
+            </div>
+        <?php endwhile; ?>
+    <?php endif; ?>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
