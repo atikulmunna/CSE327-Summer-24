@@ -72,7 +72,7 @@ if (isset($_POST['submit'])) {
 
 <section class="form-container">
     <div>
-        <p class="font-pop text-green-900 font-extrabold text-4xl text-center pt-10">Register New Admin</p>
+        <p class="font-pop text-green-900 font-extrabold text-4xl text-center pt-10">Register New Admin Or User</p>
     </div>
 
     <?php
