@@ -92,7 +92,7 @@ if (isset($message)) {
                 <a class="justify-between" href="sign-in.html">login</a>
               <?php endif; ?>
             </li>
-            <li><a href="admin.php">Admin</a></li>
+            
             <?php if ($username != 'guest'): ?>
               <li><a href="logout.php?action=logout">Logout</a></li>
             <?php endif; ?>

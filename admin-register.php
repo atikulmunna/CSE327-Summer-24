@@ -84,16 +84,16 @@ if (isset($_POST['submit'])) {
     ?>
 
 <form class="card-body w-[400px] mx-[570px]" action="" method="post">
-    <input type="text" name="name" placeholder="Enter your name" required>
-    <input type="email" name="email" placeholder="Enter your email" required>
-    <input type="text" name="phone" placeholder="Enter your phone number" required>
-    <input type="password" name="password" placeholder="Enter your password" required>
-    <input type="password" name="cpass" placeholder="Confirm your password" required>
-    <select name="role" required>
+    <input class="input input-bordered w-full max-w-xs" type="text" name="name" placeholder="Enter your name" required>
+    <input class="input input-bordered w-full max-w-xs" type="email" name="email" placeholder="Enter your email" required>
+    <input class="input input-bordered w-full max-w-xs" type="text" name="phone" placeholder="Enter your phone number" required>
+    <input class="input input-bordered w-full max-w-xs" type="password" name="password" placeholder="Enter your password" required>
+    <input class="input input-bordered w-full max-w-xs" type="password" name="cpass" placeholder="Confirm your password" required>
+    <select class="select w-full max-w-xs" name="role" required>
         <option value="user">User</option>
         <option value="admin">Admin</option>
     </select>
-    <input type="submit" name="submit" value="Register">
+    <input class="btn btn-primary mt-5" type="submit" name="submit" value="Register">
 </form>
 </section>
 
