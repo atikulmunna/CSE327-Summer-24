@@ -1,3 +1,4 @@
+<?php
 class DataBase
 {
     private static $instance;
@@ -22,14 +23,15 @@ class DataBase
         return $this->connection;
     }
 }
+?>
 
-// Use of it :
+<!-- Use of it :
 $db = Database::getInstance();
-$connection = $db->getConnection();
+$connection = $db->getConnection(); -->
 
 
 
-/*<?php
+<?php
 
 $host = 'localhost';
 $db = 'plantverse';
@@ -41,4 +43,4 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-?>*/
+?>
