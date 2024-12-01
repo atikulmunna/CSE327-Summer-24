@@ -1,91 +1,113 @@
 <?php
-//factory design pattern
+class User {
+    protected $id;
+    protected $name;
+    protected $role;
+
+    public function __construct($id, $name) {
+        $this->id = $id;
+        $this->name = $name;
+        $this->role = 'user';
+    }
+
+    public function getRole() {
+        return $this->role;
+    }
+
+    public function getLandingPage() {
+        return 'landing.php';
+    }
+
+    public function renderView() {
+        include 'navbar.php';
+        
+    }
+}
+
+class Admin extends User {
+    public function __construct($id, $name) {
+        parent::__construct($id, $name);
+        $this->role = 'admin';
+    }
+
+    public function getLandingPage() {
+        return 'admin.php';
+    }
+
+    public function renderView() {
+        include 'navbar.php';
+        
+    }
+}
+
+class PremiumUser extends User {
+    public function __construct($id, $name) {
+        parent::__construct($id, $name);
+        $this->role = 'premium';
+    }
+
+    public function getLandingPage() {
+        return 'landing.php';
+    }
+
+    public function renderView() {
+        include 'navbarPremium.php';
+        
+    }
+}
+?>
+
+
+<?php
 class UserFactory {
     public static function createUser($id, $name, $role) {
-        if ($role == 'admin') {
-            return new Admin($id, $name);
-        } else {
-            return new User($id, $name);
+        switch ($role) {
+            case 'admin':
+                return new Admin($id, $name);
+            case 'premium':
+                return new PremiumUser($id, $name);
+            default:
+                return new User($id, $name);
         }
     }
 }
 ?>
-<?php
-class User {
-    protected $email;
-    protected $name;
 
-    public function __construct($email, $name) {
-        $this->email = $email;
-        $this->name = $name;
-    }
 
-    public function getLandingPage() {
-        return 'landing-page.php';
-    }
-}
-?>
+
 <?php
-class Admin extends User {
-    public function getLandingPage() {
-        return 'admin.php';
-    }
-}
-?>
-<?php
+include 'components/connect.php';
+
+
 session_start();
-
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    $servername = "localhost";
-    $db_username = "root"; // Update this if your DB username is different
-    $db_password = "";     // Update this if your DB password is different
-    $dbname = "plantverse";
-
-    // Create connection
-    $conn = new mysqli($servername, $db_username, $db_password, $dbname);
-
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
-    // Prepare and bind
-    $stmt = $conn->prepare("SELECT id, name, password, role FROM users WHERE email = ?");
+    // Fetch user from the database
+    $stmt = $conn->prepare("SELECT id, name, role, password FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
-    $stmt->store_result();
-
-    if ($stmt->num_rows > 0) {
-        $stmt->bind_result($id, $name, $hashed_password, $role);
-        $stmt->fetch();
-
-        if (password_verify($password, $hashed_password)) {
-            // Regenerate session ID to prevent session fixation attacks
-            session_regenerate_id(true);
-
-            // Create user object using factory
-            $user = UserFactory::createUser($id, $name, $role);
-
-            // Set session variables
-            $_SESSION['user_id'] = $id;
-            $_SESSION['user_name'] = $name;
-            $_SESSION['user_role'] = $role;
-
-            // Redirect to the appropriate landing page
-            header("Location: " . $user->getLandingPage());
-            exit();
-        } else {
-            echo "Invalid password.";
-        }
-    } else {
-        echo "No user found with that email.";
-    }
-
+    $stmt->bind_result($id, $name, $role, $hashed_password);
+    $stmt->fetch();
     $stmt->close();
-    $conn->close();
+
+    // Verify password
+    if (password_verify($password, $hashed_password)) {
+        // Create user instance using the factory
+        $user = UserFactory::createUser($id, $name, $role);
+
+        // Store user information in session
+        $_SESSION['user_id'] = $id;
+        $_SESSION['user_name'] = $name;
+        $_SESSION['user_role'] = $role;
+
+        // Redirect to the appropriate landing page
+        header("Location: " . $user->getLandingPage());
+        exit();
+    } else {
+        echo "Invalid email or password.";
+    }
 }
 ?>
