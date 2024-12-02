@@ -1,81 +1,9 @@
-<?php
-class User {
-    protected $id;
-    protected $name;
-    protected $role;
-
-    public function __construct($id, $name) {
-        $this->id = $id;
-        $this->name = $name;
-        $this->role = 'user';
-    }
-
-    public function getRole() {
-        return $this->role;
-    }
-
-    public function getLandingPage() {
-        return 'landing.php';
-    }
-
-    public function renderView() {
-        include 'navbar.php';
-        
-    }
-}
-
-class Admin extends User {
-    public function __construct($id, $name) {
-        parent::__construct($id, $name);
-        $this->role = 'admin';
-    }
-
-    public function getLandingPage() {
-        return 'admin.php';
-    }
-
-    public function renderView() {
-        include 'navbar.php';
-        
-    }
-}
-
-class PremiumUser extends User {
-    public function __construct($id, $name) {
-        parent::__construct($id, $name);
-        $this->role = 'premium';
-    }
-
-    public function getLandingPage() {
-        return 'landing.php';
-    }
-
-    public function renderView() {
-        include 'navbarPremium.php';
-        
-    }
-}
-?>
-
 
 <?php
-class UserFactory {
-    public static function createUser($id, $name, $role) {
-        switch ($role) {
-            case 'admin':
-                return new Admin($id, $name);
-            case 'premium':
-                return new PremiumUser($id, $name);
-            default:
-                return new User($id, $name);
-        }
-    }
-}
-?>
-
-
-
-<?php
+include 'signin-classes/user-factory.php';
+include 'signin-classes/user-class.php';
+include 'signin-classes/premium-user-class.php';
+include 'signin-classes/admin-class.php';
 include 'components/connect.php';
 
 

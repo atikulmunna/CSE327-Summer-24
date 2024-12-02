@@ -35,7 +35,6 @@ if (isset($_POST['update_role'])) {
     <title>Admin - User Accounts</title>
 </head>
 <body>
-
 <?php include 'components/admin_header.php'; ?>
 
     <div class="container mx-auto p-4">
@@ -68,6 +67,7 @@ if (isset($_POST['update_role'])) {
                                 <select name='role' class='select select-bordered'>
                                     <option value='user' " . ($row['role'] == 'user' ? 'selected' : '') . ">User</option>
                                     <option value='admin' " . ($row['role'] == 'admin' ? 'selected' : '') . ">Admin</option>
+                                    <option value='premium' " . ($row['role'] == 'premium' ? 'selected' : '') . ">Premium</option>
                                 </select>
                                 <button type='submit' name='update_role' class='btn btn-primary ml-2'>Update</button>
                             </form>

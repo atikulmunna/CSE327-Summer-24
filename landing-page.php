@@ -1,24 +1,4 @@
 <?php
-session_start();
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: sign-in.php");
-    exit();
-}
-
-include 'sign-in.php';
-
-// Create user instance using the factory
-$user = UserFactory::createUser($_SESSION['user_id'], $_SESSION['user_name'], $_SESSION['user_role']);
-
-// Render the appropriate view
-$user->renderView();
-?>
-
-
-
-
-<?php
 include 'components/connect.php';
 
 $result = $conn->query("SELECT * FROM products ORDER BY created_at DESC");
@@ -83,10 +63,7 @@ if (!$result) {
     <!-- Header -->
     <header class="md:container md:mx-auto">
         <!-- Nav bar -->
-        <?php
-    // Render the appropriate view
-    $user->renderView();
-    ?>
+        <?php include 'components/navbar.php'; ?>
 
         <!-- slider -->
         <?php include 'components/slider.php'; ?>

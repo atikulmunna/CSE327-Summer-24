@@ -8,7 +8,7 @@ CREATE TABLE users (
     email VARCHAR(50) NOT NULL,
     phone INT(20) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role ENUM('user', 'admin') NOT NULL DEFAULT 'user',
+    role ENUM('user', 'admin', 'premium') NOT NULL DEFAULT 'user',
     reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 

@@ -17,6 +17,7 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
 // Check if the user is logged in
 if (isset($_SESSION['user_name'])) {
   $username = $_SESSION['user_name'];
+  $userRole = $_SESSION['user_role'];
 } else {
   $username = 'guest';
 }
@@ -43,6 +44,11 @@ if (isset($message)) {
       <img src="images/Plantverse-logo-01.png" alt="">
     </div>
     <div class="flex items-center">
+      <div>
+      <?php if ($userRole == 'premium'): ?>
+            <a href="notifications.php" class="btn btn-warning">Notifications</a>
+        <?php endif; ?>
+      </div>
       <!-- others button -->
       <div class="dropdown dropdown-hover">
         <div tabindex="0" role="button" class="btn m-1">Other Products</div>
@@ -86,6 +92,7 @@ if (isset($message)) {
           </div>
           <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
             <li>
+            
               <?php if ($username != 'guest'): ?>
                 <a class="justify-between" href="profile.php">Profile</a>
               <?php else: ?>

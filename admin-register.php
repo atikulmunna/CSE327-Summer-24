@@ -92,6 +92,7 @@ if (isset($_POST['submit'])) {
     <select class="select w-full max-w-xs" name="role" required>
         <option value="user">User</option>
         <option value="admin">Admin</option>
+        <option value="premium">Premium</option>
     </select>
     <input class="btn btn-primary mt-5" type="submit" name="submit" value="Register">
 </form>
