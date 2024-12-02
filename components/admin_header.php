@@ -7,6 +7,7 @@
     <a href="admin-usersAccount.php">Users</a>
     <a href="admin_orders.php">Orders</a>
     <a href="admin-accounts.php">Admins</a>
+    <a href="components/send-notification.php">Sender</a>
   </div>
   <div >
     <div class="flex items-stretch">

@@ -45,8 +45,11 @@ if (isset($message)) {
     </div>
     <div class="flex items-center">
       <div>
-      <?php if ($userRole == 'premium'): ?>
-            <a href="notifications.php" class="btn btn-warning">Notifications</a>
+        <?php if ($userRole == 'user'): ?>
+            <a href="components/notifications.php" class="btn btn-warning">Notifications</a>
+        <?php endif; ?>
+        <?php if ($userRole == 'premium'): ?>
+            <a href="components/premium-notifications.php" class="btn btn-warning">Notifications</a>
         <?php endif; ?>
       </div>
       <!-- others button -->
