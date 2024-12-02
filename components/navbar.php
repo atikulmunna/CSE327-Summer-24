@@ -98,6 +98,11 @@ if (isset($message)) {
           </div>
           <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
             <li>
+            <?php if ($userRole == 'admin'): ?>
+            <a href="admin.php" >Admin Panel</a>
+        <?php endif; ?>
+            </li>
+            <li>
             
               <?php if ($username != 'guest'): ?>
                 <a class="justify-between" href="profile.php">Profile</a>

@@ -37,7 +37,7 @@ $stmt->close();
         <p class="font-pop text-green-900 font-extrabold text-4xl text-center pt-10">Premium Products Update</p>
     </div>
     
-    <div class="overflow-x-auto mt-10 align-middle">
+    <div class="overflow-x-auto mt-10">
   <table class="table">
     <!-- head -->
     <thead>

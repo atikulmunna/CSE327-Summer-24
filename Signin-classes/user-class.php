@@ -15,7 +15,7 @@ class User {
     }
 
     public function getLandingPage() {
-        return 'landing-page.php';
+        return 'premium-subscription.php';
     }
 
     

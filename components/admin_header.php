@@ -6,7 +6,7 @@
     <a href="admin.php">Products</a>
     <a href="admin-usersAccount.php">Users</a>
     <a href="admin_orders.php">Orders</a>
-    <a href="admin-accounts.php">Admins</a>
+    
     <a href="send-notification.php">Sender</a>
   </div>
   <div >
