@@ -101,10 +101,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             name="image_url" required>
                     </div>
                     <div class="mb-3">
-                        <label for="product_type" class="form-label">Category</label>
-                        <input type="text" class="form-control input input-bordered w-full max-w-xs mt-2"
-                            id="product_type" name="product_type" required>
-                    </div>
+                <label for="product_type" class="form-label">Category</label>
+                <select class="form-control select select-primary w-full max-w-xs"" id="product_type" name="product_type" required>
+                    <option value="landing">landing</option>
+                    <option value="indoor">indoor</option>
+                    <option value="outdoor">outdoor</option>
+                    <option value="fertilizer">fertilizer</option>
+                    <option value="tools">tools</option>
+                </select>
+            </div>
                 </div>
                 <button type="submit" class="btn btn-primary ">Add Product</button>
             </form>
