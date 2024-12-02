@@ -1,40 +1,73 @@
 <?php
-include 'components/connect.php';
+include 'components/connect.php';  
 session_start();
+include 'UpdateStrategy.php';
+include 'UpdateName.php';
+include 'UpdateEmail.php';
+include 'UpdatePhone.php';
+include 'UserUpdater.php'; 
 
-// Check if user is logged in
+
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php"); // Redirect to login page if user is not logged in
+    header("Location: login.php");
     exit();
 }
 
-// Get user ID from session
+
 $user_id = $_SESSION['user_id'];
 
-// Check if form is submitted
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Retrieve form data
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $phone = $_POST['phone'];
+    
+    $name = htmlspecialchars(trim($_POST['name']));
+    $email = htmlspecialchars(trim($_POST['email']));
+    $phone = htmlspecialchars(trim($_POST['phone']));
 
-    // Prepare and execute SQL statement to update user information
-    $stmt = $conn->prepare("UPDATE users SET name = ?, email = ?, phone = ? WHERE id = ?");
-    $stmt->bind_param("sssi", $name, $email, $phone, $user_id);
-
-    if ($stmt->execute()) {
-        // User information updated successfully
-        $_SESSION['message'] = 'User information updated successfully.';
-        header("Location: profile.php"); // Redirect to profile page or any other appropriate page
-        exit();
-    } else {
-        // Error updating user information
-        $_SESSION['error'] = 'Error updating user information. Please try again.';
-        header("Location: profile.php"); // Redirect to profile page or any other appropriate page
+    
+    if (empty($name) || empty($email) || empty($phone)) {
+        $_SESSION['error'] = 'All fields are required.';
+        header("Location: profile.php");
         exit();
     }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $_SESSION['error'] = 'Invalid email format.';
+        header("Location: profile.php");
+        exit();
+    }
+
+    
+    $userUpdater = new UserUpdater();
+
+    
+    $userUpdater->setStrategy(new UpdateName());
+    if (!$userUpdater->updateUser ($conn, $user_id, $name)) {
+        $_SESSION['error'] = 'Error updating name. Please try again.';
+        header("Location: profile.php");
+        exit();
+    }
+
+    
+    $userUpdater->setStrategy(new UpdateEmail());
+    if (!$userUpdater->updateUser ($conn, $user_id, $email)) {
+        $_SESSION['error'] = 'Error updating email. Please try again.';
+        header("Location: profile.php");
+        exit();
+    }
+
+    
+    $userUpdater->setStrategy(new UpdatePhone());
+    if (!$userUpdater->updateUser ($conn, $user_id, $phone)) {
+        $_SESSION['error'] = 'Error updating phone. Please try again.';
+        header("Location: profile.php");
+        exit();
+    }
+
+    
+    $_SESSION['message'] = 'User  information updated successfully.';
+    header("Location: profile.php");
+    exit();
 } else {
-    // Redirect to profile page if form is not submitted
     header("Location: profile.php");
     exit();
 }
