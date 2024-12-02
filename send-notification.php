@@ -1,9 +1,9 @@
 <?php
 session_start();
-include 'connect.php';
-include 'Notification.php';
-include 'NotificationObserver.php';
-include 'Subject.php';
+include 'components/connect.php';
+include 'components/Notification.php';
+include 'components/NotificationObserver.php';
+include 'components/Subject.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['message']) && isset($_POST['role'])) {
@@ -54,6 +54,7 @@ $stmt->close();
 
 <!DOCTYPE html>
 <html lang="en" data-theme="cupcake">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -61,74 +62,107 @@ $stmt->close();
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Send Notification</title>
     <script>
-    tailwind.config = {
-        theme: {
-            extend: {
-                colors: {
-                    clifford: '#da373d',
-                    'plant-primary': '#E76F51',
-                    'plant-primary-bg': 'rgba(231, 111, 81, 0.10)',
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        clifford: '#da373d',
+                        'plant-primary': '#E76F51',
+                        'plant-primary-bg': 'rgba(231, 111, 81, 0.10)',
+                    }
                 }
             }
         }
-    }
     </script>
 </head>
+
 <body>
-    <?php include 'admin_header.php'; ?>
-    <form method="POST" action="send-notification.php">
-        <label for="message">Message:</label>
-        <input type="text" id="message" name="message" required>
+    <?php include 'components/admin_header.php'; ?>
+    <form method="POST" action="send-notification.php" >
+
+        <input type="text" placeholder="Message" class="input input-bordered input-success w-full max-w-xs ml-10 mt-10" type="text"
+            id="message" name="message" required />
+
         <br>
-        <label for="role">Send to:</label>
-        <select id="role" name="role" required>
+        
+        <select class="select select-accent w-full max-w-xs ml-10 mt-5" id="role" name="role" required>
+            <option disabled selected>Which user?</option>
             <option value="user">User</option>
             <option value="premium">Premium</option>
+            
         </select>
+        
         <br>
-        <button type="submit">Send Notification</button>
+    
+
+        <button class="btn btn-outline btn-success ml-10 mt-5" type="submit">Send Notification</button>
     </form>
-
-    <h2>User Notifications</h2>
-    <table border="1">
-        <tr>
-            <th>Message</th>
-            <th>Created At</th>
-            <th>Action</th>
-        </tr>
-        <?php foreach ($user_notifications as $notification): ?>
+    <div class="overflow-x-auto">
+  <table class="table">
+  <h2 class="text-center font-pop font-semibold text-lime-600 text-3xl mt-10">User Notifications</h2>
+    <!-- head -->
+    <thead>
+      <tr>
+        <th></th>
+        <th>Message</th>
+        <th>Created At</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+    <?php $serial = 1;
+     foreach ($user_notifications as $notification): ?>
+        
             <tr>
+            <th><?= $serial++ ?></th>
                 <td><?= htmlspecialchars($notification['message']) ?></td>
                 <td><?= $notification['created_at'] ?></td>
                 <td>
                     <form method="POST" action="send-notification.php" style="display:inline;">
                         <input type="hidden" name="delete_id" value="<?= $notification['id'] ?>">
-                        <button type="submit">Delete</button>
+                        <button type="submit" class="btn btn-outline btn-error btn-xs">Delete</button>
                     </form>
                 </td>
             </tr>
         <?php endforeach; ?>
-    </table>
+    </tbody>
+  </table>
+</div>
 
-    <h2>Premium Notifications</h2>
-    <table border="1">
-        <tr>
-            <th>Message</th>
-            <th>Created At</th>
-            <th>Action</th>
-        </tr>
-        <?php foreach ($premium_notifications as $notification): ?>
+
+    
+    <div class="overflow-x-auto">
+  <table class="table">
+  <h2 class="text-center font-pop font-semibold text-lime-600 text-3xl mt-10">Premium Notifications</h2>
+    <!-- head -->
+    <thead>
+      <tr>
+        <th></th>
+        <th>Message</th>
+        <th>Created At</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+    <?php $serial = 1;
+     foreach ($premium_notifications as $notification): ?>
+        
             <tr>
+            <th><?= $serial++ ?></th>
                 <td><?= htmlspecialchars($notification['message']) ?></td>
                 <td><?= $notification['created_at'] ?></td>
                 <td>
                     <form method="POST" action="send-notification.php" style="display:inline;">
                         <input type="hidden" name="delete_id" value="<?= $notification['id'] ?>">
-                        <button type="submit">Delete</button>
+                        <button type="submit" class="btn btn-outline btn-error btn-xs">Delete</button>
                     </form>
                 </td>
             </tr>
         <?php endforeach; ?>
-    </table>
+    </tbody>
+  </table>
+</div>
+    
 </body>
+
 </html>

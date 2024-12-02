@@ -20,7 +20,10 @@ if (isset($_SESSION['user_name'])) {
   $userRole = $_SESSION['user_role'];
 } else {
   $username = 'guest';
+  $userRole = 'guest';
 }
+
+
 
 if (isset($message)) {
   foreach ($message as $message) {
@@ -46,10 +49,10 @@ if (isset($message)) {
     <div class="flex items-center">
       <div>
         <?php if ($userRole == 'user'): ?>
-            <a href="components/notifications.php" class="btn btn-warning">Notifications</a>
+            <a href="notifications.php" class="btn btn-warning">Notifications</a>
         <?php endif; ?>
         <?php if ($userRole == 'premium'): ?>
-            <a href="components/premium-notifications.php" class="btn btn-warning">Notifications</a>
+            <a href="premium-notifications.php" class="btn btn-warning">Notifications</a>
         <?php endif; ?>
       </div>
       <!-- others button -->

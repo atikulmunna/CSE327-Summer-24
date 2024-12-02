@@ -1,6 +1,5 @@
 <?php
-session_start();
-include 'connect.php';
+include 'components/connect.php';
 
 // Retrieve notifications for the premium role from the database
 $stmt = $conn->prepare("SELECT message, created_at FROM notifications WHERE role = 'premium' ORDER BY created_at DESC");
@@ -33,11 +32,35 @@ $stmt->close();
     </script>
 </head>
 <body>
-    <h1>Premium Notifications</h1>
-    <ul>
-        <?php foreach ($notifications as $notification): ?>
-            <li><?= htmlspecialchars($notification['message']) ?> (<?= $notification['created_at'] ?>)</li>
-        <?php endforeach; ?>
-    </ul>
+    <?php include 'components/navbar.php'; ?>
+    <div>
+        <p class="font-pop text-green-900 font-extrabold text-4xl text-center pt-10">Premium Products Update</p>
+    </div>
+    
+    <div class="overflow-x-auto mt-10 align-middle">
+  <table class="table">
+    <!-- head -->
+    <thead>
+      <tr>
+        <th>Serial</th>
+        <th>Offers</th>
+        <th>Published at</th>
+      </tr>
+    </thead>
+    <tbody>
+            <?php 
+            $serial = 1;
+            foreach ($notifications as $notification): ?>
+                <tr>
+                <th><?= $serial++ ?></th>
+                <td><?= htmlspecialchars($notification['message']) ?></td>
+                <td><?= $notification['created_at'] ?></td>
+                </tr>
+            <?php endforeach; ?>
+            
+        
+    </tbody>
+  </table>
+</div>
 </body>
 </html>
