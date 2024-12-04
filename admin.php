@@ -1,8 +1,106 @@
 <?php
-include 'components/connect.php';
-include 'components/ProductFacade.php';
+//factory design pattern
+abstract class Product {
+    protected $product_id;
+    protected $name;
+    protected $description;
+    protected $price;
+    protected $image_url;
+    protected $product_type;
 
-$productFacade = new ProductFacade($conn);
+    public function __construct($product_id, $name, $description, $price, $image_url) {
+        $this->product_id = $product_id;
+        $this->name = $name;
+        $this->description = $description;
+        $this->price = $price;
+        $this->image_url = $image_url;
+    }
+
+    abstract public function getProductType();
+}
+
+class LandingProduct extends Product {
+    public function __construct($product_id, $name, $description, $price, $image_url) {
+        parent::__construct($product_id, $name, $description, $price, $image_url);
+        $this->product_type = 'landing';
+    }
+
+    public function getProductType() {
+        return $this->product_type;
+    }
+}
+
+class IndoorProduct extends Product {
+    public function __construct($product_id, $name, $description, $price, $image_url) {
+        parent::__construct($product_id, $name, $description, $price, $image_url);
+        $this->product_type = 'indoor';
+    }
+
+    public function getProductType() {
+        return $this->product_type;
+    }
+}
+
+class OutdoorProduct extends Product {
+    public function __construct($product_id, $name, $description, $price, $image_url) {
+        parent::__construct($product_id, $name, $description, $price, $image_url);
+        $this->product_type = 'outdoor';
+    }
+
+    public function getProductType() {
+        return $this->product_type;
+    }
+}
+
+class FertilizerProduct extends Product {
+    public function __construct($product_id, $name, $description, $price, $image_url) {
+        parent::__construct($product_id, $name, $description, $price, $image_url);
+        $this->product_type = 'fertilizer';
+    }
+
+    public function getProductType() {
+        return $this->product_type;
+    }
+}
+
+class ToolsProduct extends Product {
+    public function __construct($product_id, $name, $description, $price, $image_url) {
+        parent::__construct($product_id, $name, $description, $price, $image_url);
+        $this->product_type = 'tools';
+    }
+
+    public function getProductType() {
+        return $this->product_type;
+    }
+}
+?>
+
+<?php
+class ProductFactory {
+    public static function createProduct($type, $product_id, $name, $description, $price, $image_url) {
+        switch ($type) {
+            case 'landing':
+                return new LandingProduct($product_id, $name, $description, $price, $image_url);
+            case 'indoor':
+                return new IndoorProduct($product_id, $name, $description, $price, $image_url);
+            case 'outdoor':
+                return new OutdoorProduct($product_id, $name, $description, $price, $image_url);
+            case 'fertilizer':
+                return new FertilizerProduct($product_id, $name, $description, $price, $image_url);
+            case 'tools':
+                return new ToolsProduct($product_id, $name, $description, $price, $image_url);
+            default:
+                throw new Exception("Invalid product type");
+        }
+    }
+}
+?>
+
+<?php
+include 'components/connect.php';
+
+
+session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['product_id']) && isset($_POST['name']) && isset($_POST['description']) && isset($_POST['price']) && isset($_POST['image_url']) && isset($_POST['product_type'])) {
@@ -13,15 +111,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $image_url = $_POST['image_url'];
         $product_type = $_POST['product_type'];
 
-        $productFacade->addProduct($product_id, $name, $description, $price, $image_url, $product_type);
+        try {
+            // Create product instance using the factory
+            $product = ProductFactory::createProduct($product_type, $product_id, $name, $description, $price, $image_url);
 
-        echo "<p class='alert alert-success'>Product added successfully!</p>";
-    } elseif (isset($_POST['delete_id'])) {
-        $delete_id = $_POST['delete_id'];
-
-        $productFacade->deleteProduct($delete_id);
-
-        echo "<p class='alert alert-success'>Product deleted successfully!</p>";
+            // Insert product into the database
+            $stmt = $conn->prepare("INSERT INTO products (product_id, name, description, price, image_url, product_type) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param('sssdss', $product_id, $name, $description, $price, $image_url, $product_type);
+            if ($stmt->execute()) {
+                echo "<p class='alert alert-success'>Product added successfully!</p>";
+            } else {
+                echo "<p class='alert alert-danger'>Error adding product: " . $stmt->error . "</p>";
+            }
+            $stmt->close();
+        } catch (Exception $e) {
+            echo "<p class='alert alert-danger'>Error: " . $e->getMessage() . "</p>";
+        }
     } elseif (isset($_POST['update_id']) && isset($_POST['update_name']) && isset($_POST['update_description']) && isset($_POST['update_price']) && isset($_POST['update_image_url']) && isset($_POST['update_product_type'])) {
         $update_id = $_POST['update_id'];
         $name = $_POST['update_name'];
@@ -30,14 +135,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $image_url = $_POST['update_image_url'];
         $product_type = $_POST['update_product_type'];
 
-        $productFacade->updateProduct($update_id, $name, $description, $price, $image_url, $product_type);
+        $stmt = $conn->prepare("UPDATE products SET name = ?, description = ?, price = ?, image_url = ?, product_type = ? WHERE product_id = ?");
+        $stmt->bind_param("ssdsss", $name, $description, $price, $image_url, $product_type, $update_id);
+        $stmt->execute();
+        $stmt->close();
 
         echo "<p class='alert alert-success'>Product updated successfully!</p>";
     }
 }
+
+if (isset($_GET['delete'])) {
+    $delete_id = $_GET['delete'];
+    $stmt = $conn->prepare("DELETE FROM `products` WHERE product_id = ?");
+    $stmt->bind_param("s", $delete_id);
+    $stmt->execute();
+    $stmt->close();
+    header('location:admin.php');
+    exit();
+}
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en" data-theme="cupcake">
 
