@@ -1,16 +1,44 @@
 <?php
+class UserFacade {
+    private $conn;
+
+    public function __construct($conn) {
+        $this->conn = $conn;
+    }
+
+    public function getUserOrders($user_id) {
+        $stmt = $this->conn->prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $orders = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+        return $orders;
+    }
+
+    public function changeUserPassword($user_id, $new_password) {
+        $hashed_new_password = password_hash($new_password, PASSWORD_DEFAULT);
+        $stmt = $this->conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+        $stmt->bind_param("si", $hashed_new_password, $user_id);
+        $success = $stmt->execute();
+        $stmt->close();
+        return $success;
+    }
+}
+?>
+
+<?php
 include 'components/connect.php';
 session_start();
 
 // Get user ID from session
 $user_id = $_SESSION['user_id'];
 
-// Fetch user's previous orders from the database
-$stmt = $conn->prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$orders = $result->fetch_all(MYSQLI_ASSOC);
+// Create an instance of UserFacade
+$userFacade = new UserFacade($conn);
+
+// Fetch user's previous orders
+$orders = $userFacade->getUserOrders($user_id);
 
 // Handle password change
 $password_change_msg = '';
@@ -19,16 +47,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['change_password'])) {
     $confirm_new_password = $_POST['confirm_new_password'];
 
     if ($new_password === $confirm_new_password) {
-        $hashed_new_password = password_hash($new_password, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
-        $stmt->bind_param("si", $hashed_new_password, $user_id);
-        if ($stmt->execute()) {
+        if ($userFacade->changeUserPassword($user_id, $new_password)) {
             $password_change_msg = 'Password successfully changed.';
         } else {
-            $password_change_msg = 'Error updating password. Please try again.';
+            $password_change_msg = 'Error changing password.';
         }
     } else {
-        $password_change_msg = 'New passwords do not match.';
+        $password_change_msg = 'Passwords do not match.';
     }
 }
 ?>
