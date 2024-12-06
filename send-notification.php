@@ -5,28 +5,53 @@ include 'components/Notification.php';
 include 'components/NotificationObserver.php';
 include 'components/Subject.php';
 
+$subject = new Subject();
+$attachedRoles = [];
+
+if (isset($_SESSION['attached_roles'])) {
+    $attachedRoles = $_SESSION['attached_roles'];
+} else {
+    $_SESSION['attached_roles'] = $attachedRoles;
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['message']) && isset($_POST['role'])) {
+    if (isset($_POST['message'])) {
         $message = $_POST['message'];
-        $role = $_POST['role'];
 
         // Create a notification
         $notification = new Notification($message);
 
-        // Create a subject and attach an observer
-        $subject = new Subject();
-        $observer = new NotificationObserver();
-        $subject->attach($observer);
+        // Notify all attached observers
+        foreach ($attachedRoles as $role) {
+            $observer = new NotificationObserver();
+            $subject->attach($observer);
+        }
 
-        // Notify the observer with the role
-        $subject->notify($notification, $role);
+        $subject->notify($notification, null);
 
         // Store the notification in the database
         $stmt = $conn->prepare("INSERT INTO notifications (role, message) VALUES (?, ?)");
-        $stmt->bind_param("ss", $role, $message);
-        $stmt->execute();
+        foreach ($attachedRoles as $role) {
+            $stmt->bind_param("ss", $role, $message);
+            $stmt->execute();
+        }
         $stmt->close();
-    } elseif (isset($_POST['delete_id'])) {
+    } elseif (isset($_POST['attach_observer'])) {
+        $role = $_POST['role'];
+        if (!in_array($role, $attachedRoles)) {
+            $attachedRoles[] = $role;
+            $_SESSION['attached_roles'] = $attachedRoles;
+            echo "<p class='alert alert-success'>Observer for role $role attached successfully!</p>";
+        }
+    } elseif (isset($_POST['detach_observer'])) {
+        $role = $_POST['role'];
+        if (($key = array_search($role, $attachedRoles)) !== false) {
+            unset($attachedRoles[$key]);
+            $_SESSION['attached_roles'] = $attachedRoles;
+            echo "<p class='alert alert-success'>Observer for role $role detached successfully!</p>";
+        }
+    }
+elseif (isset($_POST['delete_id'])) {
         $delete_id = $_POST['delete_id'];
 
         // Delete the notification from the database
@@ -77,26 +102,27 @@ $stmt->close();
 </head>
 
 <body>
-    <?php include 'components/admin_header.php'; ?>
-    <form method="POST" action="send-notification.php" >
+<?php include 'components/admin_header.php'; ?>
+    <div class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-4">Send Notification</h1>
+        <form method="POST" action="send-notification.php">
+            <input type="text" placeholder="Message" class="input input-bordered input-success w-full max-w-xs ml-10 mt-10" id="message" name="message" required />
+            <br>
+            <button type="submit" class="btn btn-primary ml-10 mt-5">Send Notification</button>
+        </form>
 
-        <input type="text" placeholder="Message" class="input input-bordered input-success w-full max-w-xs ml-10 mt-10" type="text"
-            id="message" name="message" required />
-
-        <br>
-        
-        <select class="select select-accent w-full max-w-xs ml-10 mt-5" id="role" name="role" required>
-            <option disabled selected>Which user?</option>
-            <option value="user">User</option>
-            <option value="premium">Premium</option>
-            
-        </select>
-        
-        <br>
-    
-
-        <button class="btn btn-outline btn-success ml-10 mt-5" type="submit">Send Notification</button>
-    </form>
+        <h2 class="text-xl font-bold mt-10">Manage Observers</h2>
+        <form method="POST" action="send-notification.php" class="mt-5">
+            <select class="select select-accent w-full max-w-xs ml-10 mt-5" id="role" name="role" required>
+                <option disabled selected>Select role to attach/detach</option>
+                <option value="user">User</option>
+                <option value="premium">Premium</option>
+            </select>
+            <br>
+            <button type="submit" name="attach_observer" class="btn btn-success ml-10 mt-5">Attach Observer</button>
+            <button type="submit" name="detach_observer" class="btn btn-warning ml-10 mt-5">Detach Observer</button>
+        </form>
+    </div>
     <div class="overflow-x-auto">
   <table class="table">
   <h2 class="text-center font-pop font-semibold text-lime-600 text-3xl mt-10">User Notifications</h2>
