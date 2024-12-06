@@ -6,9 +6,10 @@ class UserFacade {
         $this->conn = $conn;
     }
 
+    // Fetch user's previous orders
     public function getUserOrders($user_id) {
         $stmt = $this->conn->prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC");
-        $stmt->bind_param("i", $user_id);
+        $stmt->bind_param("i", $user_id); 
         $stmt->execute();
         $result = $stmt->get_result();
         $orders = $result->fetch_all(MYSQLI_ASSOC);
