@@ -1,4 +1,5 @@
 <?php
+//maintains a list of observers and notifies
 class Subject {
     private $observers = [];
 
