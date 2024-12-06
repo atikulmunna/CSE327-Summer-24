@@ -3,7 +3,7 @@ include 'Observer.php';
 
 class NotificationObserver implements Observer {
     private $notifications = [];
-
+//method is called by the subject to notify the observer 
     public function update(Notification $notification, $role) {
         if (!isset($this->notifications[$role])) {
             $this->notifications[$role] = [];
