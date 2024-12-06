@@ -176,11 +176,11 @@ if (isset($_GET['delete'])) {
 
             </form>
             <!-- Delete products -->
-            <form method="POST" class=" card bg-base-100 shadow-xl h-full p-10 mr-10">
+            <form method="GET" class=" card bg-base-100 shadow-xl h-full p-10 mr-10">
                 <div class="mb-3">
                     <label for="delete_id" class="form-label">Product ID to Delete</label>
                     <input type="text" class="form-control input input-bordered w-full max-w-xs mt-2" id="delete_id"
-                        name="delete_id" required>
+                        name="delete" required>
                 </div>
                 <button type="submit" class="btn btn-error mb-5">Delete Product</button>
             </form>
@@ -206,8 +206,8 @@ if (isset($_GET['delete'])) {
                         <div class="card-actions flex items-center justify-between">
                             <p class="text-2xl"><strong>$<?= $row['price'] ?></strong></p>
                             <p class="text-2xl"><strong><?= $row['product_id'] ?></strong></p>
-                            <form method="POST" action="admin.php">
-                                <input type="hidden" name="delete_id" value="<?= $row['product_id']; ?>">
+                            <form method="GET" action="admin.php">
+                                <input type="hidden" name="delete" value="<?= $row['product_id']; ?>">
                                 <button type="submit" class="btn btn-error">Delete</button>
                             </form>
                         </div>
